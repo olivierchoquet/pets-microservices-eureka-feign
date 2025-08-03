@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: pet-gateway
+  cloud:
+    eureka:
+      client:
+        serviceUrl:
+          defaultZone: http://localhost:8761/eureka
+    gateway:
+      server:
+        webflux:
+          # discovery route automatique basée sur nom du service
+          # Ex: http://localhost:8080/pet-service/pets
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          routes:
+            # --- Exemple de routes manuelles si vous désactivez le discovery locator ou avez des besoins spécifiques ---
+            # - id: pet-route
+            #   uri: lb://PET-SERVICE # 'lb://' indique à Gateway d'utiliser Eureka pour la découverte
+            #   predicates:
+            #     - Path=/pets/** # Toutes les requêtes vers /pets/... seront routées vers le service 'pet-service'
+
+            # - id: mission-route
+            #   uri: lb://MISSION-SERVICE
+            #   predicates:
+            #     - Path=/missions/** # Toutes les requêtes vers /missions/... seront routées vers le service 'mission-service'
+server:
+  port: 8080 # Port par défaut pour l'API Gateway
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG # Affiche toutes les requêtes SQL exécutées
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # Affiche les paramètres bindés dans les requêtes
+    org.springframework.transaction: DEBUG # Logs sur le démarrage/fin des transactions
